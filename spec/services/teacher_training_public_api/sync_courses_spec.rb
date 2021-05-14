@@ -374,7 +374,7 @@ RSpec.describe TeacherTrainingPublicAPI::SyncCourses, sidekiq: true do
       end
     end
 
-    xdescribe 'Slack notification' do
+    describe 'Slack notification' do
       let(:accredited_body_code) { nil }
 
       let!(:provider) do

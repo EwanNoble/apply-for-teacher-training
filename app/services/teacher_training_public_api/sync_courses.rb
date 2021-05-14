@@ -36,8 +36,7 @@ module TeacherTrainingPublicAPI
           HostingEnvironment.sandbox_mode? || new_course.in_previous_cycle&.open_on_apply
 
         if provider.any_open_courses_in_current_cycle?
-          # TODO: fix https://ukgovernmentdfe.slack.com/archives/CQA64BETU/p1620925219441400
-          # notify_of_new_course!(provider, course_from_api[:accredited_body_code])
+          notify_of_new_course!(provider, course_from_api[:accredited_body_code])
         end
       end
 
