@@ -130,6 +130,12 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.6'
   gem 'rails-erd'
+  # profiling
+  gem 'rack-mini-profiler'
+  # For memory profiling
+  gem 'memory_profiler'
+  # For call-stack profiling flamegraphs
+  gem 'stackprof'
 end
 
 group :test do
