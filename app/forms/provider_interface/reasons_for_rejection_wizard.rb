@@ -4,6 +4,8 @@ module ProviderInterface
     TRANSLATION_KEY_PREFIX = 'activemodel.errors.models.provider_interface/reasons_for_rejection_wizard.attributes'.freeze
 
     class NestedAnswerValidator < ActiveModel::EachValidator
+      TRANSLATION_KEY_PREFIX = 'activemodel.errors.models.provider_interface/reasons_for_rejection_wizard.attributes'.freeze
+
       def validate_each(record, attribute, value)
         return unless options.key?(:collection_name) && options.key?(:selected_option)
 
