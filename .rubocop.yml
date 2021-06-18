@@ -1,13 +1,5 @@
 inherit_from:
   - .rubocop_todo.yml
-  - config/rubocop/config/rspec.yml
-  - config/rubocop/config/rails.yml
-  - config/rubocop/config/rake.yml
-  - config/rubocop/config/style.yml
-  - config/rubocop/config/layout.yml
-  - config/rubocop/config/lint.yml
-  - config/rubocop/config/metrics.yml
-  - config/rubocop/config/naming.yml
 
 require:
   - ./lib/rubocop/cop/govuk/govuk_button_to.rb
@@ -54,3 +46,472 @@ Govuk/GovukLinkTo:
     # link_to for kaminari pagination links
     - 'app/views/kaminari/_next_page.html.erb'
     - 'app/views/kaminari/_prev_page.html.erb'
+
+# Layout
+
+Layout/LineLength:
+  Enabled: false
+
+# Disable these cops because they do not allow reasonable code like splitting
+# `attr_reader :bla, :foo` over 2 lines.
+Layout/MultilineArrayLineBreaks:
+  Enabled: false
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: false
+
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: false
+
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: false
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+  Enabled: true
+
+Layout/SpaceBeforeBrackets:
+  Enabled: true
+
+# Lint
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/support/slack_notifications.rb'
+    - 'spec/system/support_interface/daily_report_spec.rb'
+    - 'spec/requests/vendor_api/api_authentication_spec.rb'
+
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Lint/EmptyFile:
+  Enabled: true
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Lint/SymbolConversion:
+  Enabled: false
+
+Lint/DuplicateBranch:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: true
+
+# Metrics
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+# Naming
+
+Naming/MethodParameterName:
+  AllowedNames:
+    - e
+    - to
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/PredicateName:
+  Enabled: false
+
+
+Naming/VariableNumber:
+  Enabled: false
+
+# Rails
+
+require: rubocop-rails
+
+Rails/BulkChangeTable:
+  Enabled: false
+
+# We do not want to subclass from ApplicationController. This enables separation
+# between the namespaces, and allows subclassing from ActionController::API in
+# the Vendor API.
+Rails/ApplicationController:
+  Enabled: false
+
+# Rails does not actually allow "dynamic find_by", so this cop yields false positives
+# like `VendorApiToken.find_by_unhashed_token` (which we implement ourselves)
+Rails/DynamicFindBy:
+  Enabled: false
+
+# Not all rake tasks need :environment
+Rails/RakeEnvironment:
+  Enabled: false
+
+# This cop demands a default value for not-null columns, which is not possible
+# when dealing with references
+Rails/NotNullColumn:
+  Enabled: false
+
+Rails/Output:
+  Exclude:
+    - config/initializers/console.rb
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/OutputSafety:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+Rails/HttpStatus:
+  Enabled: false
+
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+Rails/AfterCommitOverride:
+  Enabled: true
+
+Rails/FindById:
+  Enabled: true
+
+Rails/Inquiry:
+  Enabled: true
+
+Rails/MailerName:
+  Enabled: true
+
+Rails/MatchRoute:
+  Enabled: false
+
+Rails/NegateInclude:
+  Enabled: false
+
+Rails/Pluck:
+  Enabled: false
+
+Rails/PluckInWhere:
+  Enabled: true
+
+Rails/RenderInline:
+  Enabled: true
+
+Rails/RenderPlainText:
+  Enabled: true
+
+Rails/ShortI18n:
+  Enabled: true
+
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
+Rails/WhereExists:
+  Enabled: true
+
+Rails/WhereNot:
+  Enabled: false
+
+Rails/EnvironmentVariableAccess:
+  Enabled: false
+
+Rails/WhereEquals:
+  Enabled: false
+
+# Rake
+
+require: rubocop-rake
+
+Rake/Desc:
+  Exclude:
+    - 'lib/tasks/reset_qa.rake'
+
+# RSpec
+
+require: rubocop-rspec
+
+RSpec/NestedGroups:
+  Enabled: true
+  Max: 4
+  Exclude:
+    - 'spec/forms/provider_interface/offer_wizard_spec.rb'
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+# we have a property called "subject" in some factories
+RSpec/EmptyLineAfterSubject:
+  Exclude:
+    - 'spec/factories/*.rb'
+
+RSpec/LetSetup:
+  Enabled: false
+
+# It's better to be explicit about the class that's being tested
+RSpec/DescribedClass:
+  Enabled: false
+
+# This cop wants us to use `expect().to change(Candidate, :count)` instead
+# of `expect().to change { Candidate.count }`, which does not seem better.
+RSpec/ExpectChange:
+  Enabled: false
+
+RSpec/LeadingSubject:
+  Enabled: false
+
+# In acceptance tests it's often handy to user instance variables to keep track of state
+RSpec/InstanceVariable:
+  Enabled: false
+
+RSpec/PredicateMatcher:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/StubbedMock:
+  Enabled: true
+
+RSpec/FactoryBot/CreateList:
+  Enabled: false
+
+RSpec/Rails/HttpStatus:
+  Enabled: false
+
+RSpec/Capybara/FeatureMethods:
+  EnabledMethods:
+    - feature
+    - scenario
+
+# Style
+
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+# sometimes reduce is fine
+Style/EachWithObject:
+  Enabled: false
+
+# Pending cops
+# These will be enabled by default at Rubocop 1.0
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+# This cop has too many false positives (it also requires underscores for things that are not numbers)
+Style/NumericLiterals:
+  Enabled: false
+
+# Sometimes it's easier to think about a negated if, for example `render_error if !model.valid?` vs `render_error unless model.valid?`
+Style/NegatedIf:
+  Enabled: false
+
+# 🤷‍♂️
+Style/AsciiComments:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: true
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatStringToken:
+  EnforcedStyle: template
+  Exclude:
+    - app/helpers/geocode_helper.rb
+
+Style/Alias:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+  EnforcedStyle: mixed
+  AllowInnerSlashes: true
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/FormatString:
+  Exclude:
+    - app/helpers/geocode_helper.rb
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/BisectedAttrAccessor:
+  Enabled: true
+
+Style/ExponentialNotation:
+  Enabled: true
+
+Style/RedundantAssignment:
+  Enabled: true
+
+Style/RedundantFetchBlock:
+  Enabled: true
+
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: true
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/KeywordParametersOrder:
+  Enabled: false
+
+Style/GlobalStdStream:
+  Enabled: false
+
+Style/SingleArgumentDig:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Style/HashAsLastArrayItem:
+  Enabled: false
+
+Style/CombinableLoops:
+  Enabled: false
+
+Style/HashLikeCase:
+  Enabled: false
+
+Style/CaseLikeIf:
+  Enabled: false
+
+Style/ExplicitBlockArgument:
+  Enabled: false
+
+Style/ClassEqualityComparison:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/SoleNestedConditional:
+  Enabled: false
+
+Style/RedundantParentheses:
+  Enabled: true
+
+Style/QuotedSymbols:
+  Enabled: false
+
+Style/NegatedIfElseCondition:
+  Enabled: false
+
+Style/HashConversion:
+  Enabled: false
+
+Style/IfWithBooleanLiteralBranches:
+  Enabled: false
+
+Style/NilLambda:
+  Exclude:
+    - app/views/provider_interface/interviews/cancel.html.erb
