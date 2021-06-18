@@ -1,13 +1,13 @@
 inherit_from:
   - .rubocop_todo.yml
-  - ./config/rubocop/config/rspec.yml
-  - ./config/rubocop/config/rails.yml
-  - ./config/rubocop/config/rake.yml
-  - ./config/rubocop/config/style.yml
-  - ./config/rubocop/config/layout.yml
-  - ./config/rubocop/config/lint.yml
-  - ./config/rubocop/config/metrics.yml
-  - ./config/rubocop/config/naming.yml
+  - config/rubocop/config/rspec.yml
+  - config/rubocop/config/rails.yml
+  - config/rubocop/config/rake.yml
+  - config/rubocop/config/style.yml
+  - config/rubocop/config/layout.yml
+  - config/rubocop/config/lint.yml
+  - config/rubocop/config/metrics.yml
+  - config/rubocop/config/naming.yml
 
 require:
   - ./lib/rubocop/cop/govuk/govuk_button_to.rb
