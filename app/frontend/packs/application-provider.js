@@ -14,3 +14,9 @@ initAddFurtherConditions()
 checkboxSearchFilter('subject', 'Search for subject')
 filter()
 cookieBanners()
+
+document.getElementById('popout').onclick = function (e) {
+  e.preventDefault();
+  alert('clicked!');
+  zE('webWidget', 'popout');
+};

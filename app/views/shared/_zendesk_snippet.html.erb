@@ -3,3 +3,19 @@
   nonce="<%= request.content_security_policy_nonce %>"
   src=https://static.zdassets.com/ekr/snippet.js?key=904d04ae-8027-4ebb-ad39-d0e9f68d6ab1>
 </script>
+
+<script nonce="<%= request.content_security_policy_nonce %>">
+  zE('webWidget:on', 'chat:status', function(status) {
+    if(status === 'online') {
+      // renderLink();
+    } else if(status === 'offline') {
+      // hideLink();
+    } else if(status === 'away') {
+      // doSomething();
+    }
+    alert(status);
+  });
+</script>
+
+
+<a id="popout" href="#">Open chat in new window</a>
