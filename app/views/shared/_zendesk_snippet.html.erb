@@ -7,15 +7,12 @@
 <script nonce="<%= request.content_security_policy_nonce %>">
   zE('webWidget:on', 'chat:status', function(status) {
     if(status === 'online') {
+    console.log('hi');
       // renderLink();
     } else if(status === 'offline') {
       // hideLink();
     } else if(status === 'away') {
       // doSomething();
     }
-    alert(status);
   });
 </script>
-
-
-<a id="popout" href="#">Open chat in new window</a>
