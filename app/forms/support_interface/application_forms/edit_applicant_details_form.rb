@@ -35,6 +35,7 @@ module SupportInterface
           last_name: last_name,
           date_of_birth: date_of_birth,
           phone_number: phone_number,
+          audit_tags: ['edit_personal_details'],
           audit_comment: audit_comment,
         )
 

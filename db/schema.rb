@@ -314,6 +314,7 @@ ActiveRecord::Schema.define(version: 2021_06_18_132255) do
     t.string "remote_address"
     t.string "request_uuid"
     t.datetime "created_at"
+    t.string "audit_tags", array: true
     t.index ["associated_type", "associated_id"], name: "associated_index"
     t.index ["auditable_type", "auditable_id", "version"], name: "auditable_index"
     t.index ["auditable_type", "id"], name: "index_audits_on_auditable_type_and_id"
