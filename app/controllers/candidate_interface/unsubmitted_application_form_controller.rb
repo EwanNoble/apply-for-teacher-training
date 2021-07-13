@@ -2,7 +2,7 @@ module CandidateInterface
   class UnsubmittedApplicationFormController < CandidateInterfaceController
     before_action :redirect_to_dashboard_if_submitted
     before_action :redirect_to_application_if_between_cycles, except: %w[show review]
-    before_action :redirect_to_carry_over_if_unsubmitted_previous_cycle, except: %w[review]
+    before_action :redirect_to_carry_over_if_not_submitted_at_apply_1_deadline, except: %w[review]
 
     def before_you_start; end
 
@@ -61,8 +61,8 @@ module CandidateInterface
       true
     end
 
-    def redirect_to_carry_over_if_unsubmitted_previous_cycle
-      return unless current_application.must_be_carried_over?
+    def redirect_to_carry_over_if_not_submitted_at_apply_1_deadline
+      return unless current_application.not_submitted_and_apply_deadline_has_passed?
 
       redirect_to candidate_interface_start_carry_over_path
     end

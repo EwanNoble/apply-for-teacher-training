@@ -100,8 +100,6 @@ RSpec.feature 'Manually carry over unsubmitted applications' do
   end
 
   def when_i_click_on_start_now
-    expect(page).to have_content "Carry on with your application for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year."
-    expect(page).to have_content 'Your courses have been removed. You can add them again now.'
     click_button 'Apply again'
   end
 
