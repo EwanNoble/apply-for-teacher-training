@@ -19,8 +19,7 @@ RSpec.describe 'Candidate can carry over unsuccessful application to a new recru
 
     when_the_next_recruitment_cycle_begins
     and_i_visit_my_application_complete_page
-    and_i_click_on_apply_again
-    and_i_click_on_start_now
+    then_i_see_the_carry_over_inset_text
     and_i_click_go_to_my_application_form
 
     then_i_can_see_application_details
@@ -67,19 +66,12 @@ RSpec.describe 'Candidate can carry over unsuccessful application to a new recru
     visit candidate_interface_application_complete_path
   end
 
-  def and_i_click_on_apply_again
-    expect(page).to have_content 'Do you want to continue applying?'
-    click_link 'Continue your application'
-  end
-
-  def and_i_click_on_start_now
-    expect(page).to have_content "Carry on with your application for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year."
-    expect(page).to have_content 'Your courses have been removed. You can add them again now.'
-    click_button 'Apply again'
-  end
-
   def and_i_click_go_to_my_application_form
     click_link 'Go to your application form'
+  end
+
+  def then_i_see_the_carry_over_inset_text
+    expect(page).to have_content "You can apply for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year instead."
   end
 
   def then_i_can_see_application_details

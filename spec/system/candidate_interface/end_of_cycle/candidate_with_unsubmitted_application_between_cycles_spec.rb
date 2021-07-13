@@ -23,7 +23,7 @@ RSpec.feature 'Candidate attempts to submit the application after the end-of-cyc
     when_i_the_new_cycle_opens
     and_i_log_in_again
     and_i_visit_the_application_form_page
-    then_i_am_redirected_to_the_carry_over_interstitial
+    then_i_see_the_carry_over_inset_text
   end
 
   def given_i_am_signed_in
@@ -71,9 +71,7 @@ RSpec.feature 'Candidate attempts to submit the application after the end-of-cyc
     create_and_sign_in_candidate
   end
 
-  def then_i_am_redirected_to_the_carry_over_interstitial
-    expect(page).to have_content "Carry on with your application for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year."
-    expect(page).to have_content 'Your courses have been removed. You can add them again now.'
-    click_button 'Apply again'
+  def then_i_see_the_carry_over_inset_text
+    expect(page).to have_content "Continue your application to apply for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year instead"
   end
 end

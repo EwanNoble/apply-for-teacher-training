@@ -15,7 +15,7 @@ RSpec.feature 'Candidate with unsuccessful application' do
     and_i_have_an_unsuccessful_application
     and_i_visit_the_application_dashboard
     then_i_do_not_see_an_apply_again_banner
-    and_i_do_see_a_carry_over_application_banner
+    and_i_do_see_a_carry_over_inset_text
   end
 
   def given_i_am_signed_in_as_a_candidate
@@ -43,7 +43,7 @@ RSpec.feature 'Candidate with unsuccessful application' do
     expect(page).not_to have_content('Do you want to apply again?')
   end
 
-  def and_i_do_see_a_carry_over_application_banner
-    expect(page).to have_content "Courses for the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year are now closed"
+  def and_i_do_see_a_carry_over_inset_text
+    expect(page).to have_content "You can apply for courses starting in the #{RecruitmentCycle.cycle_name(RecruitmentCycle.next_year)} academic year instead"
   end
 end
