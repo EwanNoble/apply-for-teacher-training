@@ -131,6 +131,7 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.7'
   gem 'rails-erd'
+  gem 'rack-mini-profiler'
 end
 
 group :test do
@@ -163,3 +164,4 @@ group :development, :test do
   gem 'bullet'
   gem 'parallel_tests'
 end
+
