@@ -132,6 +132,8 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.7'
   gem 'rails-erd'
   gem 'rack-mini-profiler'
+gem 'memory_profiler'
+gem 'stackprof'
 end
 
 group :test do
