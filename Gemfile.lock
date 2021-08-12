@@ -391,6 +391,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
+    rack-mini-profiler (2.3.2)
+      rack (>= 1.2.0)
     rack-oauth2 (1.16.0)
       activesupport
       attr_required
@@ -725,6 +727,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma (~> 5.4)
+  rack-mini-profiler
   rails-erd
   rails_semantic_logger
   railties (~> 6.1)
