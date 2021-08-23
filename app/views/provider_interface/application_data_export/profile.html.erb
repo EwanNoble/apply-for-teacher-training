@@ -1,0 +1,4 @@
+<h2><%= @csv_data.size - 1 %> rows returned</h2>
+<% @csv_data.each do |row| %>
+  <pre><%= row %></pre>
+<% end %>
