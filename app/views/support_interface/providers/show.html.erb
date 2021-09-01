@@ -20,3 +20,16 @@
   'Data sharing agreement' => dsa,
   'Average distance to sites' => format_average_distance(@provider, @provider.sites),
 })) %>
+
+<h2 class="govuk-heading-l">API integration</h2>
+<%= render(SummaryListComponent.new(rows: {
+  'Student records system (SRS)' => 'Tribal SITS',
+  'Last sync' => "#{2.days.ago.to_s(:govuk_date_and_time)} (#{time_ago_in_words(2.days.ago)} ago)",
+  'Last decision sent' => "#{15.hours.ago.to_s(:govuk_date_and_time)} (#{time_ago_in_words(15.hours.ago)} ago)",
+})) %>
+
+
+<p class="govuk-body">
+  <%= govuk_link_to('API request logs',  support_interface_vendor_api_requests_path) %>
+</p>
+

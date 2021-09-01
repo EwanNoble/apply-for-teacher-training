@@ -1,0 +1,176 @@
+<%= render 'support_interface/performance/performance_navigation', title: 'Vendor API monitoring' %>
+
+<h2 class="govuk-heading-m">No sync in last 24 hours</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">SRS</th>
+      <th class="govuk-table__header govuk-table__header">Last sync</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          Bath Spa University
+        </td>
+        <td class="govuk-table__cell">
+          Tribal SITS
+        </td>
+        <td class="govuk-table__cell">
+          <%= "#{2.days.ago.to_s(:govuk_date_and_time)} (#{time_ago_in_words(2.days.ago)} ago)" %>
+        </td>
+      </tr>
+  </tbody>
+</table>
+
+<h2 class="govuk-heading-m">No decisions in last 7 days</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">SRS</th>
+      <th class="govuk-table__header govuk-table__header">Last decision</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          University of Sunderland
+        </td>
+        <td class="govuk-table__cell">
+          Tribal SITS
+        </td>
+        <td class="govuk-table__cell">
+          <%= "#{5.days.ago.to_s(:govuk_date_and_time)} (#{time_ago_in_words(5.days.ago)} ago)" %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          Oxford Brookes University
+        </td>
+        <td class="govuk-table__cell">
+          Ellucian Banner
+        </td>
+        <td class="govuk-table__cell">
+          <%= "#{3.days.ago.to_s(:govuk_date_and_time)} (#{time_ago_in_words(2.days.ago)} ago)" %>
+        </td>
+      </tr>
+  </tbody>
+</table>
+
+<h2 class="govuk-heading-m">Error rate (last 7 days)</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">SRS</th>
+      <th class="govuk-table__header govuk-table__header">Requests</th>
+      <th class="govuk-table__header govuk-table__header">Errors</th>
+      <th class="govuk-table__header govuk-table__header">Error rate</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          Goldsmiths
+        </td>
+        <td class="govuk-table__cell">
+          In-house
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(133) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(40) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= ((40.to_f/133) * 100).round(2) %>%
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          University of Sunderland
+        </td>
+        <td class="govuk-table__cell">
+          Tribal SITS
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(1221) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(18) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= ((18.to_f/1221) * 100).round(2) %>%
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          University of Oxford
+        </td>
+        <td class="govuk-table__cell">
+          Tribal SITS
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(977) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(12) %>
+        </td>
+        <td class="govuk-table__cell">
+          <%= ((12.to_f/977) * 100).round(2) %>%
+        </td>
+      </tr>
+  </tbody>
+</table>
+
+<h2 class="govuk-heading-m">Busiest clients (last 7 days)</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+      <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">SRS</th>
+      <th class="govuk-table__header govuk-table__header">Requests</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          University of Wolverhampton
+        </td>
+        <td class="govuk-table__cell">
+          Tribal SITS
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(4281) %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          Edge Hill
+        </td>
+        <td class="govuk-table__cell">
+          Ellucian Quercus
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(3928) %>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+          Goldsmiths
+        </td>
+        <td class="govuk-table__cell">
+          In-house
+        </td>
+        <td class="govuk-table__cell">
+          <%= number_with_delimiter(133) %>
+        </td>
+      </tr>
+  </tbody>
+</table>
