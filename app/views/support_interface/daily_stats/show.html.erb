@@ -1,0 +1,268 @@
+<h1 class="govuk-heading-xl">Daily stats for <%= @stats.date.to_s(:govuk_date) %></h1>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.applications_begun,
+      label: "#{'application'.pluralize(@stats.applications_begun)} begun",
+      colour: :grey,
+    ) %>
+  </div>
+  <div class="govuk-grid-column-one-third">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.apply_again_applications_begun,
+      label: "of which #{'was'.pluralize(@stats.apply_again_applications_begun)} Apply again",
+      colour: :grey,
+    ) %>
+  </div>
+  <div class="govuk-grid-column-one-third">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.applications_submitted,
+      label: "#{'application'.pluralize(@stats.applications_submitted)} submitted",
+      colour: :grey,
+    ) %>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.offers_made.count,
+      label: "#{'offer'.pluralize(@stats.offers_made.count)} received",
+      colour: :grey,
+      href: '#offers-received'
+    ) %>
+  </div>
+  <div class="govuk-grid-column-one-half">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.candidates_recruited.count,
+      label: "#{'candidate'.pluralize(@stats.candidates_recruited.count)} recruited",
+      colour: :green,
+      href: '#candidates-recruited'
+    ) %>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.candidates_rejected.count,
+      label: "#{'candidate'.pluralize(@stats.candidates_rejected)} rejected",
+      colour: :red,
+      href: '#candidates-rejected'
+    ) %>
+  </div>
+  <div class="govuk-grid-column-one-half">
+    <%= render SupportInterface::TileComponent.new(
+      count: @stats.candidates_rejected_by_default.count,
+      label: "of whom #{'was'.pluralize(@stats.candidates_rejected_by_default.count)} rejected by default (RBD)",
+      colour: :red,
+    ) %>
+  </div>
+</div>
+
+<h2 class="govuk-heading-l">Rejections received</h2>
+
+<% if @stats.candidates_rejected.any? %>
+  <table class="govuk-table" id="candidates-rejected">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Candidate</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Submitted</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Phase</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Responses</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.candidates_rejected.each do |form| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to form.full_name, support_interface_application_form_path(form.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.submitted_at.to_s(:govuk_date_and_time) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.phase.humanize %>
+          </td>
+          <td class="govuk-table__cell">
+            <% form.application_choices.each do |choice| %>
+              <%= render SupportInterface::ApplicationStatusTagComponent.new(status: choice.status) %>
+           <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Rejections per provider</h2>
+
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter"># of rejections</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.candidates_rejected_provider_stats.each do |provider, count| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to provider.name, support_interface_provider_path(provider.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= count %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Rejections by default (RBD) per provider</h2>
+
+  <% if @stats.rbd_provider_stats.any? %>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+          <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter"># of rejections</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <% @stats.rbd_provider_stats.each do |provider, count| %>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <%= govuk_link_to provider.name, support_interface_provider_path(provider.id) %>
+            </td>
+            <td class="govuk-table__cell">
+              <%= count %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="govuk-body">No RBDs</p>
+  <% end %>
+<% else %>
+  <p class="govuk-body">No candidates rejected</p>
+<% end %>
+
+<h2 class="govuk-heading-l">Offers received</h2>
+
+<% if @stats.offers_made.any? %>
+  <table class="govuk-table" id="offers-received">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Candidate</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Submitted</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Phase</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Responses</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.offers_made.each do |form| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to form.full_name, support_interface_application_form_path(form.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.submitted_at.to_s(:govuk_date_and_time) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.phase.humanize %>
+          </td>
+          <td class="govuk-table__cell">
+            <% form.application_choices.each do |choice| %>
+             <%= render SupportInterface::ApplicationStatusTagComponent.new(status: choice.status) %>
+           <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Offers per provider</h2>
+
+  <table class="govuk-table" id="offers-made">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter"># of offers</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.offers_made_provider_stats.each do |provider, count| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to provider.name, support_interface_provider_path(provider.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= count %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="govuk-body">No offers made</p>
+<% end %>
+
+<h2 class="govuk-heading-l">Candidates recruited</h2>
+
+<% if @stats.candidates_recruited.any? %>
+  <table class="govuk-table" id="candidates-recruited">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Candidate</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Submitted</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Phase</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Responses</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.candidates_recruited.each do |form| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to form.full_name, support_interface_application_form_path(form.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.submitted_at.to_s(:govuk_date_and_time) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= form.phase.humanize %>
+          </td>
+          <td class="govuk-table__cell">
+            <% form.application_choices.each do |choice| %>
+             <%= render SupportInterface::ApplicationStatusTagComponent.new(status: choice.status) %>
+           <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2 class="govuk-heading-m">Recruitments per provider</h2>
+
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter">Provider</th>
+        <th class="govuk-table__header govuk-table__header govuk-!-width-one-quarter"># recruited</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @stats.candidates_recruited_provider_stats.each do |provider, count| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">
+            <%= govuk_link_to provider.name, support_interface_provider_path(provider.id) %>
+          </td>
+          <td class="govuk-table__cell">
+            <%= count %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="govuk-body">No candidates recruited</p>
+<% end %>
+

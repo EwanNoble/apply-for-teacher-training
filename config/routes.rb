@@ -1053,6 +1053,7 @@ Rails.application.routes.draw do
     end
 
     get '/email-log', to: 'email_log#index', as: :email_log
+    get '/daily-stats', to: 'daily_stats#show', as: :daily_stats
     get '/vendor-api-requests', to: 'vendor_api_requests#index', as: :vendor_api_requests
 
     scope '/settings' do
