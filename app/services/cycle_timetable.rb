@@ -120,11 +120,15 @@ class CycleTimetable
   end
 
   def self.between_cycles_apply_1?
+    return unless apply_1_deadline && apply_reopens
+
     Time.zone.now > apply_1_deadline &&
       Time.zone.now < apply_reopens
   end
 
   def self.between_cycles_apply_2?
+    return unless apply_2_deadline && apply_reopens
+
     Time.zone.now > apply_2_deadline &&
       Time.zone.now < apply_reopens
   end
@@ -136,7 +140,7 @@ class CycleTimetable
                  fake_schedules.fetch(current_cycle_schedule).fetch(year)
                end
 
-    schedule.fetch(name)
+    schedule[name]
   end
 
   def self.current_cycle_schedule
