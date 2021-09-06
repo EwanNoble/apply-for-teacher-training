@@ -122,11 +122,19 @@ class CycleTimetable
   def self.between_cycles_apply_1?
     Time.zone.now > apply_1_deadline &&
       Time.zone.now < apply_reopens
+  rescue KeyError
+    # If dates have not been set for the current and next cycle
+    # default to false
+    false
   end
 
   def self.between_cycles_apply_2?
     Time.zone.now > apply_2_deadline &&
       Time.zone.now < apply_reopens
+  rescue KeyError
+    # If dates have not been set for the current and next cycle
+    # default to false
+    false
   end
 
   def self.date(name, year = current_year)
