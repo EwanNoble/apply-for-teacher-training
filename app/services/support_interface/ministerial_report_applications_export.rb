@@ -9,58 +9,60 @@ module SupportInterface
     end
 
     def call
-      results = subject_mapping(subject_status_count)
+      report = initialize_empty_report
 
-      export_rows = {}
-
-      MinisterialReport::SUBJECTS.each { |subject| export_rows[subject] = column_names }
-
-      multi_subject_choices = multi_subject_application_ids(results)
-
-      applications_to_map_once = []
-
-      results.each do |(subject, status, id, name, phase, form_id), count|
-        next if phase == 'apply_2' && ApplicationForm.find(form_id) != ApplicationForm.find(form_id).candidate.current_application
-
-        if multi_subject_choices.include?(id) && subject_does_not_appear_first(name, subject) && !subject_appears_in_course_name(name, subject) && !applications_to_map_once.include?(id)
-          subject = ApplicationChoice.find(id).course.level.to_sym if !subject_appears_in_course_name(name, subject)
-          applications_to_map_once << id
-        elsif applications_to_map_once.include?(id) || (multi_subject_choices.include?(id) && subject_does_not_appear_first(name, subject) && subject_appears_in_course_name(name, subject))
-          next
-        end
-
-        mapped_statuses = MinisterialReport::APPLICATIONS_REPORT_STATUS_MAPPING[status]
-
-        mapped_statuses.each { |mapped_status| add_row_values(export_rows, subject, mapped_status, count) }
+      report = choices_with_courses_and_subjects.each_with_object(report) do |choice, report_in_progress|
+        add_choice_to_report(choice, report_in_progress)
       end
 
-      export_rows[:total] = export_rows[:primary].merge(export_rows[:secondary]) { |_k, primary_value, secondary_value| primary_value + secondary_value }
-
-      export_rows = export_rows.map { |subject, value| { subject: subject }.merge!(value) }
+      assign_totals_to_report(report)
     end
 
-    alias data_for_export call
+    def add_choice_to_report(choice, report)
+      return report if choice.phase == 'apply_2' && !choice.is_latest_a2_app
+
+      subject = determine_dominant_course_subject_for_report(choice.course_name, choice.course_level, choice.subject_names.zip(choice.subject_codes).to_h)
+
+      MinisterialReport::APPLICATIONS_REPORT_STATUS_MAPPING[choice.status.to_sym].each do |mapped_status|
+        report[:stem][mapped_status] += 1 if MinisterialReport::STEM_SUBJECTS.include? subject
+        report[:ebacc][mapped_status] += 1 if MinisterialReport::EBACC_SUBJECTS.include? subject
+        report[:secondary][mapped_status] += 1 if MinisterialReport::SECONDARY_SUBJECTS.include? subject
+        report[subject][mapped_status] += 1
+      end
+
+      report
+    end
+
+    def assign_totals_to_report(report)
+      report[:total] = report[:primary].merge(report[:secondary]) { |_k, primary_value, secondary_value| primary_value + secondary_value }
+
+      report.map { |subject, value| { subject: subject }.merge!(value) }
+    end
+
+    def determine_dominant_course_subject_for_report(course_name, course_level, subject_names_and_codes)
+      subject_names = subject_names_and_codes.keys
+
+      # is subject first in the course name?
+      subject = subject_names.find do |subject_name|
+        course_name.split.first.downcase.in?(subject_name.to_s.downcase)
+      end
+
+      # is subject in the course name at all?
+      if !subject
+        subject = subject_names.find do |subject_name|
+          subject_name.to_s.downcase.in?(course_name.downcase)
+        end
+      end
+
+      subject_code_for_report = subject_names_and_codes[subject]
+
+      MinisterialReport::SUBJECT_CODE_MAPPINGS[subject_code_for_report].presence || course_level.downcase.to_sym
+    end
 
   private
 
-    def multi_subject_application_ids(subjects)
-      application_choices_ids = []
-
-      subjects.each { |(_subject, _status, id, _name, _phase, _form_id), _count| application_choices_ids << id }
-
-      application_choices_ids.select { |id| application_choices_ids.count(id) > 1 }.uniq
-    end
-
-    def subject_does_not_appear_first(course_name, subject_name)
-      !course_name.split.first.downcase.in?(subject_name.to_s.downcase)
-    end
-
-    def subject_appears_in_course_name(course_name, subject_name)
-      subject_name.to_s.downcase.in?(course_name.downcase)
-    end
-
-    def column_names
-      {
+    def initialize_empty_report
+      report_columns = {
         applications: 0,
         offer_received: 0,
         accepted: 0,
@@ -68,26 +70,22 @@ module SupportInterface
         application_rejected: 0,
         application_withdrawn: 0,
       }
+
+      report_rows = {}
+      MinisterialReport::SUBJECTS.each { |subject| report_rows[subject] = report_columns.dup }
+
+      report_rows
     end
 
-    def add_row_values(hash, subject, status, value)
-      hash[:stem][status] += value if MinisterialReport::STEM_SUBJECTS.include? subject
-      hash[:ebacc][status] += value if MinisterialReport::EBACC_SUBJECTS.include? subject
-      hash[:secondary][status] += value if MinisterialReport::SECONDARY_SUBJECTS.include? subject
-      hash[subject][status] += value
-    end
-
-    def subject_status_count
-      Subject
-        .joins(courses: { application_choices: :application_form })
-        .where('application_forms.recruitment_cycle_year': RecruitmentCycle.current_year)
-        .where.not('application_forms.submitted_at': nil)
-        .group('subjects.code', 'application_choices.status', 'application_choices.id', 'courses.name', 'application_forms.phase', 'application_forms.id')
-        .count
-    end
-
-    def subject_mapping(query)
-      query.transform_keys { |subject_code, status, id, name, phase, form_id| [MinisterialReport::SUBJECT_CODE_MAPPINGS[subject_code], status.to_sym, id, name, phase, form_id] }
+    def choices_with_courses_and_subjects
+      ApplicationChoice
+        .select('application_choices.id as id, application_choices.status as status, application_form.id as application_form_id, application_form.phase as phase, courses.name as course_name, courses.level as course_level, ARRAY_AGG(subjects.name) as subject_names, ARRAY_AGG(subjects.code) as subject_codes, (CASE WHEN a2_latest_application_forms.candidate_id IS NOT NULL THEN true ELSE false END) AS is_latest_a2_app')
+        .joins(:application_form)
+        .joins(course_option: { course: :subjects })
+        .joins("LEFT JOIN (SELECT candidate_id, MAX(created_at) as created FROM application_forms WHERE phase = 'apply_2' GROUP BY candidate_id) a2_latest_application_forms ON application_form.created_at = a2_latest_application_forms.created")
+        .where(application_form: { recruitment_cycle_year: RecruitmentCycle.current_year })
+        .where.not(application_form: { submitted_at: nil })
+        .group('application_choices.id, application_choices.status, application_form.id, application_form.phase, courses.name, courses.level, a2_latest_application_forms.candidate_id')
     end
   end
 end
