@@ -15,7 +15,7 @@ module SupportInterface
           last_name: match.last_name,
           fraudulent?: marked_as_fraudulent?(match),
           candidate_last_contacted_at: match.candidate_last_contacted_at&.to_s(:govuk_date_and_time),
-          email_addresses: match.candidates.map { |candidate| candidate },
+          email_addresses: match.candidates,
           submitted_at: match.candidates.map { |candidate| submitted?(candidate) },
         }
       end
@@ -24,19 +24,11 @@ module SupportInterface
   private
 
     def submitted?(candidate)
-      if candidate.current_application.submitted_at?
-        'Yes'
-      else
-        'No'
-      end
+      candidate.current_application.submitted? ? 'Yes' : 'No'
     end
 
     def marked_as_fraudulent?(match)
-      if match.fraudulent?
-        'Yes'
-      else
-        'No'
-      end
+      match.fraudulent? ? 'Yes' : 'No'
     end
   end
 end
