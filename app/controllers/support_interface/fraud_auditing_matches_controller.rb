@@ -17,5 +17,11 @@ module SupportInterface
 
       redirect_to support_interface_fraud_auditing_matches_path
     end
+
+    def confirm_block_submission
+    end
+
+    def block_submission
+    end
   end
 end
