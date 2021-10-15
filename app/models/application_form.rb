@@ -450,8 +450,9 @@ private
   end
 
   def find_region_from_uk_postcode
-    # TODO:
-    :south_east
+    return nil if postcode.blank?
+
+    POSTCODE_REGION_MAPPINGS[postcode.upcase.split[0]]
   end
 
   def find_international_region_from_country
