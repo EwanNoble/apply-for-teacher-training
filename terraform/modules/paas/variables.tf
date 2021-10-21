@@ -70,6 +70,7 @@ locals {
   app_service_bindings = [cloudfoundry_service_instance.postgres, cloudfoundry_service_instance.redis,
   cloudfoundry_service_instance.redis_cache, cloudfoundry_user_provided_service.logging]
   service_gov_uk_host_names = {
+    michael   = "michael2"
     qa        = "qa"
     staging   = "staging"
     sandbox   = "sandbox"
@@ -78,6 +79,7 @@ locals {
     prod      = "www"
   }
   assets_host_names = {
+    michael   = "michael"
     qa        = "qa-assets"
     staging   = "staging-assets"
     sandbox   = "sandbox-assets"

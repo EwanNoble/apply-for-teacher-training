@@ -105,6 +105,12 @@ load-test:
 	$(eval SPACE=bat-qa)
 	$(eval AZURE_SUBSCRIPTION=s121-findpostgraduateteachertraining-development)
 
+michael:
+	$(eval APP_ENV=michael)
+	$(eval SPACE=bat-qa)
+	$(eval APP_NAME_SUFFIX=michael)
+	$(eval AZURE_SUBSCRIPTION=s121-findpostgraduateteachertraining-development)
+
 azure-login:
 	az account set -s $(AZURE_SUBSCRIPTION)
 
