@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dangerous-do-not-use
   pull_request:
     branches:
       - main
