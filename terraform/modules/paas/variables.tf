@@ -73,6 +73,7 @@ locals {
     sandbox   = "sandbox"
     research  = "research"
     load-test = "load-test"
+    pen       = "pen"
     prod      = "www"
   }
   assets_host_names = {
@@ -81,6 +82,7 @@ locals {
     sandbox   = "sandbox-assets"
     research  = "research-assets"
     load-test = "load-test-assets"
+    pen       = "pen-assets"
     prod      = "assets"
   }
   web_app_routes = [cloudfoundry_route.web_app_service_gov_uk_route, cloudfoundry_route.web_app_cloudapps_digital_route,
