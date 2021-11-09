@@ -121,10 +121,16 @@ class DataExport < ApplicationRecord
       description: 'A CSV version of the candidates by age group table for the monthly report',
       class: SupportInterface::MonthlyStatisticsExports::CandidatesByAgeGroupExport,
     },
+    monthly_statistics_candidates_by_area_export: {
+      name: 'Monthly statistics candidates by area',
+      export_type: 'monthly_statistics_candidates_by_area',
+      description: 'A CSV version of the candidates by area table for the monthly report',
+      class: SupportInterface::MonthlyStatisticsExports::CandidatesByAreaExport,
+    },
     monthly_statistics_candidates_by_sex_export: {
-      name: 'Monthly statistics candidates by age group',
+      name: 'Monthly statistics candidates by sex',
       export_type: 'monthly_statistics_candidates_by_sex',
-      description: 'A CSV version of the candidates by age group table for the monthly report',
+      description: 'A CSV version of the candidates by sex table for the monthly report',
       class: SupportInterface::MonthlyStatisticsExports::CandidatesBySexExport,
     },
     monthly_statistics_candidates_by_status_export: {
@@ -296,6 +302,7 @@ class DataExport < ApplicationRecord
     ministerial_report_candidates_export: 'ministerial_report_candidates_export',
     monthly_statistics_applications_by_status_export: 'monthly_statistics_applications_by_status_export',
     monthly_statistics_candidates_by_age_group_export: 'monthly_statistics_candidates_by_age_group_export',
+    monthly_statistics_candidates_by_area_export: 'monthly_statistics_candidates_by_area_export',
     monthly_statistics_candidates_by_sex_export: 'monthly_statistics_candidates_by_sex_export',
     monthly_statistics_candidates_by_status_export: 'monthly_statistics_candidates_by_status_export',
     notifications_export: 'notifications_export',
