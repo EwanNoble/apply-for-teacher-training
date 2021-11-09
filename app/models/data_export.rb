@@ -115,6 +115,12 @@ class DataExport < ApplicationRecord
       description: 'A CSV version of the applications by status table for the monthly report',
       class: SupportInterface::MonthlyStatisticsExports::ApplicationsByStatusExport,
     },
+    monthly_statistics_candidates_by_age_group_export: {
+      name: 'Monthly statistics candidates by age group',
+      export_type: 'monthly_statistics_candidates_by_age_group',
+      description: 'A CSV version of the candidates by age group table for the monthly report',
+      class: SupportInterface::MonthlyStatisticsExports::CandidatesByAgeGroupExport,
+    },
     monthly_statistics_candidates_by_status_export: {
       name: 'Monthly statistics candidates by status',
       export_type: 'monthly_statistics_candidates_by_status',
