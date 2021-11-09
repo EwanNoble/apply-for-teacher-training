@@ -115,6 +115,12 @@ class DataExport < ApplicationRecord
       description: 'A CSV version of the applications by course age group table for the monthly report',
       class: SupportInterface::MonthlyStatisticsExports::ApplicationsByCourseAgeGroupExport,
     },
+    monthly_statistics_applications_by_course_type_export: {
+      name: 'Monthly statistics applications by course type',
+      export_type: 'monthly_statistics_applications_by_course_type',
+      description: 'A CSV version of the applications by course type table for the monthly report',
+      class: SupportInterface::MonthlyStatisticsExports::ApplicationsByCourseTypeExport,
+    },
     monthly_statistics_applications_by_status_export: {
       name: 'Monthly statistics applications by status',
       export_type: 'monthly_statistics_applications_by_status',
@@ -307,6 +313,7 @@ class DataExport < ApplicationRecord
     ministerial_report_applications_export: 'ministerial_report_applications_export',
     ministerial_report_candidates_export: 'ministerial_report_candidates_export',
     monthly_statistics_applications_by_course_age_group_export: 'monthly_statistics_applications_by_course_age_group_export',
+    monthly_statistics_applications_by_course_type_export: 'monthly_statistics_applications_by_course_type_export',
     monthly_statistics_applications_by_status_export: 'monthly_statistics_applications_by_status_export',
     monthly_statistics_candidates_by_age_group_export: 'monthly_statistics_candidates_by_age_group_export',
     monthly_statistics_candidates_by_area_export: 'monthly_statistics_candidates_by_area_export',
