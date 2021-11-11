@@ -4,8 +4,8 @@ module MonthlyStatistics
 
     def table_data
       {
-        rows: rows,
-        column_totals: column_totals_for(rows),
+        rows: apply_minimum_value_rule_to_rows(rows),
+        column_totals: apply_minimum_value_rule_to_totals(column_totals_for(rows)),
       }
     end
 
@@ -33,8 +33,7 @@ module MonthlyStatistics
       _area, *statuses = rows.first.keys
 
       statuses.map do |column_name|
-        column_total = rows.inject(0) { |total, hash| total + hash[column_name] }
-        column_total
+        rows.inject(0) { |total, hash| total + hash[column_name] }
       end
     end
 
