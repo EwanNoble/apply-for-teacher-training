@@ -94,7 +94,7 @@ gem 'request_store-sidekiq'
 
 # Background processing
 gem 'sidekiq'
-gem 'clockwork'
+gem 'sidekiq-cron'
 
 # Rate limiting
 gem 'rack-attack'
@@ -159,7 +159,6 @@ group :test do
   gem 'webmock', '~> 3.14'
   gem 'simplecov', require: false
   gem 'simplecov-cobertura', require: false
-  gem 'clockwork-test'
   gem 'deepsort'
   gem 'ruby-jmeter'
   gem 'super_diff'

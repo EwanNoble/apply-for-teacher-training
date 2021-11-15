@@ -24,7 +24,6 @@ unless ENV['TEST_ENV_NUMBER']
 end
 
 require 'sidekiq/testing'
-require 'clockwork/test'
 require 'audited-rspec'
 
 ENV['SERVICE_TYPE'] = 'test' # this is used for logging

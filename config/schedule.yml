@@ -1,0 +1,4 @@
+export_users:
+  cron: '10 * * * *'
+  class: 'RejectApplicationsByDefaultWorker'
+  queue: default
