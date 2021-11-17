@@ -68,6 +68,7 @@ locals {
     maxmemory_policy = "allkeys-lru"
   }
   service_gov_uk_host_names = {
+    michael   = "michael"
     qa        = "qa"
     staging   = "staging"
     sandbox   = "sandbox"
@@ -75,6 +76,7 @@ locals {
     prod      = "www"
   }
   assets_host_names = {
+    michael   = "michael-assets"
     qa        = "qa-assets"
     staging   = "staging-assets"
     sandbox   = "sandbox-assets"
