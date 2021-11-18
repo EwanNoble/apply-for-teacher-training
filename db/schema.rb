@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_12_082940) do
+
+ActiveRecord::Schema.define(version: 2021_11_18_145442) do
 
   create_sequence "qualifications_public_id_seq", start: 120000
 
@@ -686,7 +687,6 @@ ActiveRecord::Schema.define(version: 2021_11_12_082940) do
     t.float "longitude"
     t.string "region"
     t.uuid "uuid"
-    t.index ["code", "provider_id"], name: "index_sites_on_code_and_provider_id", unique: true
     t.index ["provider_id"], name: "index_sites_on_provider_id"
   end
 
