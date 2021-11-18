@@ -11,6 +11,7 @@
         "region_code": "south_east",
         "name": "St Bernards High School",
         "city": "",
+        "uuid": "43c8eda6-21b4-4ac5-9845-fd5abd4bbb5d",
         "county": "",
         "street_address_1": "Milton Road",
         "street_address_2": "Westcliff on Sea"
@@ -48,6 +49,7 @@
         "longitude": 0.6123,
         "postcode": "SS68EB",
         "region_code": "eastern",
+        "uuid":"ebf721af-2230-49b5-8970-63dc191224dc",
         "name": "The Fitzwimarc School",
         "city": "Essex",
         "county": "",
