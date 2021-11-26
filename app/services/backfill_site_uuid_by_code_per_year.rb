@@ -16,15 +16,16 @@ class BackfillSiteUuidByCodePerYear
   end
 
   def split_sites_and_assign_uuids_by_year(site_from_api, site_on_apply)
-    if @recruitment_cycle_year == RecruitmentCycle.current_year
-      site_on_apply.update(uuid: site_from_api.uuid)
-    else
-      duplicate_site = site_on_apply.dup
-      duplicate_site.update(uuid: site_from_api.uuid)
-      site_on_apply.course_options.joins(:course).where(courses: { recruitment_cycle_year: @recruitment_cycle_year }).each do |course_option|
-        course_option.update(site: duplicate_site)
+    ActiveRecord::Base.no_touching do
+      if @recruitment_cycle_year == RecruitmentCycle.current_year
+        site_on_apply.update(uuid: site_from_api.uuid)
+      else
+        duplicate_site = site_on_apply.dup
+        duplicate_site.update(uuid: site_from_api.uuid, created_at: site_on_apply.created_at, updated_at: site_on_apply.updated_at)
+        site_on_apply.course_options.joins(:course).where(courses: { recruitment_cycle_year: @recruitment_cycle_year }).each do |course_option|
+          course_option.update(site: duplicate_site)
+        end
       end
     end
   end
-
 end
