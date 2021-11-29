@@ -51,14 +51,6 @@ module Publications
           counts[subject_lookup(subject)].merge!({ status => count })
         end
 
-        group_query_including_deferred_offers.map do |item|
-          subject, status = item[0]
-          count = item[1]
-
-          statuses_for_subject = counts[subject_lookup(subject)] || {}
-          statuses_for_subject[status] = (statuses_for_subject[status] || 0) + count
-        end
-
         counts
       end
 
@@ -72,14 +64,6 @@ module Publications
           'Primary with mathematics' => 'Mathematics',
           'Primary with science' => 'Science',
         }[subject]
-      end
-
-      def group_query_including_deferred_offers
-        group_query(recruitment_cycle_year: RecruitmentCycle.previous_year)
-          .where(status: 'offer_deferred')
-          .where(course: { level: 'primary' })
-          .group('subjects.name', 'status_before_deferral')
-          .count
       end
 
       def group_query_excluding_deferred_offers

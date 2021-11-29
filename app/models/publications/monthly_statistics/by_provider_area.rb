@@ -52,13 +52,6 @@ module Publications
           counts[region_code_lookup(region_code)]&.merge!({ status => count })
         end
 
-        group_query_for_deferred_offers.map do |item|
-          region_code, status = item[0]
-          count = item[1]
-          statuses_for_region_code = counts[region_code_lookup(region_code)] || {}
-          statuses_for_region_code[status] = (statuses_for_region_code[status] || 0) + count
-        end
-
         counts
       end
 
@@ -74,13 +67,6 @@ module Publications
           'west_midlands' => 'West Midlands',
           'yorkshire_and_the_humber' => 'Yorkshire and The Humber',
         }[region_code]
-      end
-
-      def group_query_for_deferred_offers
-        group_query(recruitment_cycle_year: RecruitmentCycle.previous_year)
-          .where(status: :offer_deferred)
-          .group('providers.region_code', 'status_before_deferral')
-          .count
       end
 
       def group_query_excluding_deferred_offers

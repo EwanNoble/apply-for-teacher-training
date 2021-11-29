@@ -8,8 +8,6 @@ module Publications
         }
       end
 
-    private
-
       def rows
         @rows ||= formatted_age_group_query.map do |age_group, statuses|
           {
@@ -149,13 +147,6 @@ module Publications
           counts[age_group].merge!({ status => count })
         end
 
-        deferred_offers_count.map do |item|
-          age_group = item['age_group']
-          status_before_deferral = item['status_before_deferral']
-          count = item['count']
-          counts[age_group][status_before_deferral] += count
-        end
-
         counts
       end
 
@@ -219,50 +210,6 @@ module Publications
               raw_data.status, raw_data.age_group
           ORDER BY
               raw_data.status
-        SQL
-      end
-
-      def deferred_offers_count
-        @deferred_offers_counts ||= ActiveRecord::Base
-          .connection
-          .execute(deferred_offers_query)
-          .to_a
-      end
-
-      def deferred_offers_query
-        <<-SQL
-          WITH raw_data AS (
-              SELECT
-                  c.id,
-                  f.id,
-                  ch.status_before_deferral,
-                  CASE
-                    #{age_group_sql}
-                  END age_group
-              FROM
-                  application_forms f
-              LEFT JOIN
-                  candidates c ON f.candidate_id = c.id
-              LEFT JOIN
-                  application_choices ch ON ch.application_form_id = f.id
-              WHERE
-                  NOT c.hide_in_reporting
-                  AND f.recruitment_cycle_year = #{RecruitmentCycle.previous_year}
-                  AND f.date_of_birth IS NOT NULL
-                  AND ch.status_before_deferral IS NOT NULL
-              GROUP BY
-                  c.id, f.id, age_group, status_before_deferral
-          )
-          SELECT
-              raw_data.status_before_deferral,
-              raw_data.age_group,
-              COUNT(*)
-          FROM
-              raw_data
-          GROUP BY
-              raw_data.status_before_deferral, raw_data.age_group
-          ORDER BY
-              raw_data.status_before_deferral
         SQL
       end
 

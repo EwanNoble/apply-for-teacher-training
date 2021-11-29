@@ -12,8 +12,6 @@ module Publications
         }
       end
 
-    private
-
       def rows
         @rows ||= formatted_counts.map do |status, phases|
           {
@@ -75,15 +73,7 @@ module Publications
       end
 
       def combined_application_choice_states_tally(phase)
-        status_for_choices_tally = tally_application_choices(phase: phase, cycle: RecruitmentCycle.current_year, field: 'status')
-        deferral_status_choices_tally = tally_application_choices(phase: phase, cycle: RecruitmentCycle.previous_year, field: 'status_before_deferral')
-
-        format_deferral_status_choices_tally = deferral_status_choices_tally.map do |tally|
-          tally['status'] = tally['status_before_deferral']
-          tally
-        end
-
-        combined_tally = status_for_choices_tally + format_deferral_status_choices_tally
+        combined_tally = tally_application_choices(phase: phase, cycle: RecruitmentCycle.current_year)
 
         status_and_count_hash = combined_tally.map do |hash|
           { hash['status'] => hash['count'] }
@@ -94,7 +84,7 @@ module Publications
         end
       end
 
-      def tally_application_choices(phase:, cycle:, field:)
+      def tally_application_choices(phase:, cycle:)
         without_subsequent_applications_query = if @by_candidate
                                                   "AND (
                                                     NOT EXISTS (
@@ -108,15 +98,14 @@ module Publications
                                                   ''
                                                 end
 
-        query = "SELECT COUNT(application_choices_with_minimum_statuses.id), application_choices_with_minimum_statuses.#{field}
+        query = "SELECT COUNT(application_choices_with_minimum_statuses.id), application_choices_with_minimum_statuses.status
                   FROM (
                     SELECT application_choices.id as id,
-                           application_choices.status_before_deferral as status_before_deferral,
                            application_choices.status as status,
                            ROW_NUMBER() OVER (
                             PARTITION BY application_forms.id
                             ORDER BY
-                            CASE application_choices.#{field}
+                            CASE application_choices.status
                             WHEN 'recruited' THEN 1
                             WHEN 'pending_conditions' THEN 2
                             WHEN 'conditions_not_met' THEN 2
@@ -139,7 +128,7 @@ module Publications
                             #{without_subsequent_applications_query}
                           ) AS application_choices_with_minimum_statuses
                   WHERE application_choices_with_minimum_statuses.row_number = 1
-                  GROUP BY #{field}"
+                  GROUP BY status"
 
         ActiveRecord::Base
           .connection

@@ -69,9 +69,6 @@ module Publications
         group_query_excluding_deferred_offers.reject { |item| item['status'] == 'offer_deferred' }.map do |item|
           increment_area_status_count(counts, item, 'status')
         end
-        group_query_for_deferred_offers.map do |item|
-          increment_area_status_count(counts, item, 'status_before_deferral')
-        end
 
         counts
       end
@@ -84,22 +81,13 @@ module Publications
         counts[area]&.merge!({ status => running_count + count })
       end
 
-      def group_query_for_deferred_offers
-        group_query(
-          cycle: RecruitmentCycle.previous_year,
-          group_by_attribute: :region_code,
-          status_attribute: 'status_before_deferral',
-        )
-      end
-
       def group_query_excluding_deferred_offers
         group_query(
           cycle: RecruitmentCycle.current_year,
-          group_by_attribute: :region_code,
         )
       end
 
-      def group_query(cycle:, group_by_attribute:, status_attribute: :status)
+      def group_query(cycle:)
         without_subsequent_applications_query =
           "AND (
             NOT EXISTS (
@@ -109,26 +97,19 @@ module Publications
               WHERE application_forms.id = subsequent_application_forms.previous_application_form_id
             )
           )"
-        with_statuses =
-          if status_attribute.to_s == 'status_before_deferral'
-            "AND application_choices.status = 'offer_deferred'"
-          else
-            ''
-          end
 
         query = "SELECT
                    COUNT(application_choices_with_minimum_statuses.id),
-                   application_choices_with_minimum_statuses.#{status_attribute},
-                   #{group_by_attribute}
+                   application_choices_with_minimum_statuses.status,
+                   region_code
                   FROM (
                     SELECT application_choices.id as id,
-                           application_choices.status_before_deferral as status_before_deferral,
                            application_choices.status as status,
                            application_forms.region_code as region_code,
                            ROW_NUMBER() OVER (
                             PARTITION BY application_forms.id
                             ORDER BY
-                            CASE application_choices.#{status_attribute}
+                            CASE application_choices.status
                             WHEN 'offer_deferred' THEN 0
                             WHEN 'recruited' THEN 1
                             WHEN 'pending_conditions' THEN 2
@@ -149,10 +130,9 @@ module Publications
                             ON application_choices.application_form_id = application_forms.id
                           WHERE application_forms.recruitment_cycle_year = #{cycle}
                           #{without_subsequent_applications_query}
-                          #{with_statuses}
                           ) AS application_choices_with_minimum_statuses
                   WHERE application_choices_with_minimum_statuses.row_number = 1
-                  GROUP BY #{[group_by_attribute, status_attribute].compact.join(',')}"
+                  GROUP BY region_code, status"
 
         ActiveRecord::Base
           .connection

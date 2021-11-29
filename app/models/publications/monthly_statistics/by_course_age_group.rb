@@ -40,12 +40,6 @@ module Publications
           'Further education' => {},
         }
 
-        group_query_including_deferred_offers.map do |item|
-          level, status = item[0]
-          count = item[1]
-          counts[level].merge!({ status => count })
-        end
-
         group_query_excluding_deferred_offers.map do |item|
           level, status = item[0]
           count = item[1]
@@ -53,13 +47,6 @@ module Publications
         end
 
         counts
-      end
-
-      def group_query_including_deferred_offers
-        group_query(recruitment_cycle_year: RecruitmentCycle.previous_year)
-          .where(status: 'offer_deferred')
-          .group('courses.level', 'status_before_deferral')
-          .count
       end
 
       def group_query_excluding_deferred_offers

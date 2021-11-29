@@ -91,18 +91,6 @@ module Publications
           end
         end
 
-        group_query_including_deferred_offers.map do |item|
-          subject, status = item[0]
-          count = item[1]
-
-          if MODERN_FOREIGN_LANGUAGES.include?(subject)
-            languages_counter << { status => count }
-          else
-            statuses_for_subject = counts[subject] || {}
-            statuses_for_subject[status] = (statuses_for_subject[status] || 0) + count
-          end
-        end
-
         counts['Modern foreign languages']&.merge!(modern_foreign_languages_sum(languages_counter))
 
         counts
@@ -119,14 +107,6 @@ module Publications
           .where.not(status: 'offer_deferred')
           .where(course: { level: 'secondary' })
           .group('subjects.name', 'status')
-          .count
-      end
-
-      def group_query_including_deferred_offers
-        group_query(recruitment_cycle_year: RecruitmentCycle.previous_year)
-          .where(status: 'offer_deferred')
-          .where(course: { level: 'secondary' })
-          .group('subjects.name', 'status_before_deferral')
           .count
       end
 

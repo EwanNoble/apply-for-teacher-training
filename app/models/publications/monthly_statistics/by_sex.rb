@@ -49,18 +49,7 @@ module Publications
           counts[item['sex']]&.merge!({ item['status'] => item['count'] })
         end
 
-        group_query_for_deferred_offers.map do |item|
-          counts[item['sex']]&.merge!({ item['status_before_deferral'] => item['count'] })
-        end
-
         counts
-      end
-
-      def group_query_for_deferred_offers
-        group_query(
-          cycle: RecruitmentCycle.previous_year,
-          status_attribute: :status_before_deferral,
-        )
       end
 
       def group_query_excluding_deferred_offers
@@ -80,26 +69,20 @@ module Publications
               WHERE application_forms.id = subsequent_application_forms.previous_application_form_id
             )
           )"
-        with_statuses =
-          if status_attribute == :status_before_deferral
-            "AND application_choices.status = 'offer_deferred'"
-          else
-            "AND NOT application_choices.status = 'offer_deferred'"
-          end
+        with_statuses = "AND NOT application_choices.status = 'offer_deferred'"
 
         query = "SELECT
           COUNT(application_choices_with_minimum_statuses.id),
-          application_choices_with_minimum_statuses.#{status_attribute},
+          application_choices_with_minimum_statuses.status,
           sex
         FROM (
           SELECT application_choices.id as id,
-            application_choices.status_before_deferral as status_before_deferral,
             application_choices.status as status,
             application_forms.equality_and_diversity->>'sex' as sex,
             ROW_NUMBER() OVER (
               PARTITION BY application_forms.id
               ORDER BY
-              CASE application_choices.#{status_attribute}
+              CASE application_choices.status
               WHEN 'offer_deferred' THEN 0
               WHEN 'recruited' THEN 1
               WHEN 'pending_conditions' THEN 2
@@ -123,7 +106,7 @@ module Publications
             #{with_statuses}
           ) AS application_choices_with_minimum_statuses
         WHERE application_choices_with_minimum_statuses.row_number = 1
-        GROUP BY sex, #{status_attribute}"
+        GROUP BY sex, status"
 
         ActiveRecord::Base
           .connection
