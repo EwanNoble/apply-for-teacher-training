@@ -10,6 +10,7 @@ class ApplicationStateChange
   POST_OFFERED_STATES = (ACCEPTED_STATES + %i[declined offer_withdrawn]).freeze
   UNSUCCESSFUL_END_STATES = %i[withdrawn cancelled rejected declined conditions_not_met offer_withdrawn application_not_sent].freeze
   SUCCESSFUL_STATES = %i[pending_conditions offer offer_deferred recruited].freeze
+  POST_DEFERRAL_STATES = %i[pending_conditions conditions_not_met recruited withdrawn].freeze
   DECISION_PENDING_STATUSES = %i[awaiting_provider_decision interviewing].freeze
   TERMINAL_STATES = UNSUCCESSFUL_END_STATES + %i[recruited].freeze
 

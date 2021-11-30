@@ -30,8 +30,14 @@ module DataAPI
 
     def relevant_applications
       ApplicationForm
+        .joins(:application_choices)
         .current_cycle
-        .includes(
+        .or(
+          ApplicationForm
+            .joins(:application_choices)
+            .where('application_forms.recruitment_cycle_year < ?', RecruitmentCycle.current_year)
+            .where('application_choices.current_recruitment_cycle_year' => RecruitmentCycle.current_year),
+        ).includes(
           :candidate,
         ).preload(
           :application_qualifications,
