@@ -14,11 +14,13 @@ module Publications
 
       def rows
         @rows ||= formatted_counts.map do |status, phases|
+          apply_1_count = (phases['apply_1'] || 0)
+          apply_again_count = (phases['apply_2'] || 0)
           {
             'Status' => status,
-            'First application' => apply_one_count(phases),
-            'Apply again' => apply_again_count(phases),
-            'Total' => phase_count(phases),
+            'First application' => apply_1_count,
+            'Apply again' => apply_again_count,
+            'Total' => apply_1_count + apply_again_count,
           }
         end
       end
@@ -73,20 +75,24 @@ module Publications
       end
 
       def combined_application_choice_states_tally(phase)
-        combined_tally = tally_application_choices(phase: phase, cycle: RecruitmentCycle.current_year)
-
-        status_and_count_hash = combined_tally.map do |hash|
-          { hash['status'] => hash['count'] }
-        end
-
-        status_and_count_hash.each_with_object(Hash.new(0)) do |hash, sum|
-          hash.each { |key, value| sum[key] += value }
+        if @by_candidate
+          tally_application_choices_by_candidate(phase: phase)
+        else
+          tally_individual_application_choices(phase: phase)
         end
       end
 
-      def tally_application_choices(phase:, cycle:)
-        without_subsequent_applications_query = if @by_candidate
-                                                  "AND (
+      def tally_individual_application_choices(phase:)
+        ApplicationChoice.joins(:application_form)
+          .where('application_forms.phase' => phase, 'application_forms.recruitment_cycle_year' => RecruitmentCycle.current_year)
+          .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
+          .group(:status).count
+      end
+
+      def tally_application_choices_by_candidate(phase:)
+        cycle = RecruitmentCycle.current_year
+
+        without_subsequent_applications_query = "AND (
                                                     NOT EXISTS (
                                                       SELECT 1
                                                       FROM application_forms
@@ -94,9 +100,6 @@ module Publications
                                                       WHERE application_forms.id = subsequent_application_forms.previous_application_form_id
                                                     )
                                                   )"
-                                                else
-                                                  ''
-                                                end
 
         query = "SELECT COUNT(application_choices_with_minimum_statuses.id), application_choices_with_minimum_statuses.status
                   FROM (
@@ -134,18 +137,9 @@ module Publications
           .connection
           .execute(query)
           .to_a
-      end
-
-      def apply_one_count(phases)
-        phases['apply_1'] || 0
-      end
-
-      def apply_again_count(phases)
-        phases['apply_2'] || 0
-      end
-
-      def phase_count(phases)
-        apply_one_count(phases) + apply_again_count(phases)
+          .map do |hash|
+            [hash['status'], hash['count']]
+          end.to_h
       end
     end
   end
