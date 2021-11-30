@@ -24,7 +24,7 @@ task generate_monthly_report_for_qa: %i[environment] do
 
     filename = "#{folder_name}/#{data_export.filename}"
 
-    File.write(filename, data_export.reload.data)
+    File.write(filename, data_export.reload.data.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_'))
     puts "wrote #{filename}"
   end
 end
