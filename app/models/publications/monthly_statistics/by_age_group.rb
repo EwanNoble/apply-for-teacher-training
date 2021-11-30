@@ -169,6 +169,7 @@ module Publications
                     WHEN 'offer_deferred' = ANY(ARRAY_AGG(ch.status)) THEN 'offer_deferred'
                     WHEN 'pending_conditions' = ANY(ARRAY_AGG(ch.status)) THEN 'pending_conditions'
                     WHEN 'offer' = ANY(ARRAY_AGG(ch.status)) THEN 'offer'
+                    WHEN 'interviewing' = ANY(ARRAY_AGG(ch.status)) THEN 'interviewing'
                     WHEN 'awaiting_provider_decision' = ANY(ARRAY_AGG(ch.status)) THEN 'awaiting_provider_decision'
                     WHEN 'declined' = ANY(ARRAY_AGG(ch.status)) THEN 'declined'
                     WHEN 'rejected' = ANY(ARRAY_AGG(ch.status)) THEN 'rejected'
