@@ -86,8 +86,9 @@ module Publications
       end
 
       def tally_individual_application_choices(phase:)
-        ApplicationChoice.joins(:application_form)
+        ApplicationChoice.joins(application_form: :candidate)
           .where('application_forms.phase' => phase, 'application_choices.current_recruitment_cycle_year' => RecruitmentCycle.current_year)
+          .where('candidates.hide_in_reporting IS NOT true')
           .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
           .group(:status).count
       end
@@ -129,7 +130,10 @@ module Publications
                           FROM application_forms
                           INNER JOIN application_choices
                             ON application_choices.application_form_id = application_forms.id
+                          INNER JOIN candidates
+                            ON application_forms.candidate_id = candidates.id
                             WHERE application_choices.current_recruitment_cycle_year = #{cycle}
+                            AND candidates.hide_in_reporting IS NOT TRUE
                             AND application_forms.phase = '#{phase}'
                             #{without_subsequent_applications_query}
                           ) AS application_choices_with_minimum_statuses
