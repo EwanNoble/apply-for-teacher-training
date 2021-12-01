@@ -126,7 +126,7 @@ module Publications
                           FROM application_forms
                           INNER JOIN application_choices
                             ON application_choices.application_form_id = application_forms.id
-                            WHERE application_forms.recruitment_cycle_year = #{cycle}
+                            WHERE application_choices.current_recruitment_cycle_year = #{cycle}
                             AND application_forms.phase = '#{phase}'
                             #{without_subsequent_applications_query}
                           ) AS application_choices_with_minimum_statuses
