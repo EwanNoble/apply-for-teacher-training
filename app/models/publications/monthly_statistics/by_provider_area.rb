@@ -79,7 +79,9 @@ module Publications
       def group_query(recruitment_cycle_year:)
         ApplicationChoice
           .joins(course_option: { site: :provider })
+          .joins(application_form: :candidate)
           .where(current_recruitment_cycle_year: recruitment_cycle_year)
+          .where('candidates.hide_in_reporting' => false)
       end
     end
   end
