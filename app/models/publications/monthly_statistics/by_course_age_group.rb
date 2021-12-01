@@ -58,7 +58,9 @@ module Publications
 
       def group_query(recruitment_cycle_year:)
         ApplicationChoice
-          .joins(course: :subjects)
+          .joins(:course)
+          .joins(application_form: :candidate)
+          .where('candidates.hide_in_reporting IS NOT true')
           .where(current_recruitment_cycle_year: recruitment_cycle_year)
       end
     end
