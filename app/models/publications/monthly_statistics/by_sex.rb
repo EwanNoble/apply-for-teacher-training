@@ -101,7 +101,10 @@ module Publications
           FROM application_forms
           INNER JOIN application_choices
             ON application_choices.application_form_id = application_forms.id
-          WHERE application_forms.recruitment_cycle_year = #{cycle}
+          INNER JOIN candidates
+            ON candidates.id = application_forms.candidate_id
+          WHERE candidates.hide_in_reporting = false
+          AND application_forms.recruitment_cycle_year = #{cycle}
             #{without_subsequent_applications_query}
             #{with_statuses}
           ) AS application_choices_with_minimum_statuses
