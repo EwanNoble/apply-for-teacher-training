@@ -188,7 +188,7 @@ module Publications
                   application_choices ch ON ch.application_form_id = f.id
               WHERE
                   NOT c.hide_in_reporting
-                  AND f.recruitment_cycle_year = #{RecruitmentCycle.current_year}
+                  AND ch.current_recruitment_cycle_year = #{RecruitmentCycle.current_year}
                   AND f.date_of_birth IS NOT NULL
                   AND (
                     NOT EXISTS (
