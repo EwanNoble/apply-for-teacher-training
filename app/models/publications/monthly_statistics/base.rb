@@ -3,6 +3,15 @@ module Publications
     class Base
     protected
 
+      def application_choices
+        ApplicationChoice
+          .joins(application_form: :candidate)
+          .joins(:current_course)
+          .where('candidates.hide_in_reporting IS NOT TRUE')
+          .where(current_recruitment_cycle_year: RecruitmentCycle.current_year)
+          .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
+      end
+
       def recruited_count(statuses)
         statuses['recruited'] || 0
       end
@@ -11,8 +20,12 @@ module Publications
         statuses['pending_conditions'] || 0
       end
 
+      def deferred_count(statuses)
+        statuses['offer_deferred'] || 0
+      end
+
       def offer_count(statuses)
-        (statuses['offer'] || 0) + (statuses['offer_deferred'] || 0)
+        (statuses['offer'] || 0)
       end
 
       def awaiting_decision_count(statuses)
@@ -30,6 +43,7 @@ module Publications
       def statuses_count(statuses)
         recruited_count(statuses) +
           pending_count(statuses) +
+          deferred_count(statuses) +
           offer_count(statuses) +
           awaiting_decision_count(statuses) +
           unsuccessful_count(statuses)

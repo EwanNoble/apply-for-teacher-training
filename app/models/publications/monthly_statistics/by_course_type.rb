@@ -16,6 +16,7 @@ module Publications
             'Course type' => program_type,
             'Recruited' => recruited_count(statuses),
             'Conditions pending' => pending_count(statuses),
+            'Deferred' => deferred_count(statuses),
             'Received an offer' => offer_count(statuses),
             'Awaiting provider decisions' => awaiting_decision_count(statuses),
             'Unsuccessful' => unsuccessful_count(statuses),
@@ -42,7 +43,7 @@ module Publications
           'School Direct (salaried)' => {},
         }
 
-        group_query_excluding_deferred_offers.map do |item|
+        applications_to_program_counts.map do |item|
           program_type, status = item[0]
           count = item[1]
           counts[program_type_lookup(program_type)]&.merge!({ status => count })
@@ -61,19 +62,10 @@ module Publications
         }[subject]
       end
 
-      def group_query_excluding_deferred_offers
-        group_query(recruitment_cycle_year: RecruitmentCycle.current_year)
-          .where.not(status: :offer_deferred)
+      def applications_to_program_counts
+        application_choices
           .group('courses.program_type', 'status')
           .count
-      end
-
-      def group_query(recruitment_cycle_year:)
-        ApplicationChoice
-          .joins(:course)
-          .joins(application_form: :candidate)
-          .where('candidates.hide_in_reporting IS NOT TRUE')
-          .where(current_recruitment_cycle_year: recruitment_cycle_year)
       end
     end
   end

@@ -59,6 +59,7 @@ module Publications
             'Subject' => subject,
             'Recruited' => recruited_count(statuses),
             'Conditions pending' => pending_count(statuses),
+            'Deferred' => deferred_count(statuses),
             'Received an offer' => offer_count(statuses),
             'Awaiting provider decisions' => awaiting_decision_count(statuses),
             'Unsuccessful' => unsuccessful_count(statuses),
@@ -102,13 +103,8 @@ module Publications
       end
 
       def application_choices_with_subjects
-        ApplicationChoice
-          .joins(application_form: :candidate)
-          .joins(:current_course)
+        application_choices
           .preload(current_course: :subjects)
-          .where('candidates.hide_in_reporting IS NOT TRUE')
-          .where(current_recruitment_cycle_year: RecruitmentCycle.current_year)
-          .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
           .where('courses.level' => 'secondary')
       end
     end

@@ -1,6 +1,6 @@
 module Publications
   module MonthlyStatistics
-    class ByStatus
+    class ByStatus < Publications::MonthlyStatistics::Base
       def initialize(by_candidate: false)
         @by_candidate = by_candidate
       end
@@ -86,10 +86,8 @@ module Publications
       end
 
       def tally_individual_application_choices(phase:)
-        ApplicationChoice.joins(application_form: :candidate)
-          .where('application_forms.phase' => phase, 'application_choices.current_recruitment_cycle_year' => RecruitmentCycle.current_year)
-          .where('candidates.hide_in_reporting IS NOT true')
-          .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
+        application_choices
+          .where('application_forms.phase' => phase)
           .group(:status).count
       end
 
