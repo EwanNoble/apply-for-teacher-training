@@ -38,6 +38,7 @@ module Publications
         counts = {
           'Recruited' => { 'apply_1' => 0, 'apply_2' => 0 },
           'Conditions pending' => { 'apply_1' => 0, 'apply_2' => 0 },
+          'Deferred' => { 'apply_1' => 0, 'apply_2' => 0 },
           'Received an offer but not responded' => { 'apply_1' => 0, 'apply_2' => 0 },
           'Awaiting provider decisions' => { 'apply_1' => 0, 'apply_2' => 0 },
           'Declined an offer' => { 'apply_1' => 0, 'apply_2' => 0 },
@@ -57,6 +58,8 @@ module Publications
               counts['Awaiting provider decisions'][phase] += count
             when 'pending_conditions'
               counts['Conditions pending'][phase] += count
+            when 'offer_deferred'
+              counts['Deferred'][phase] += count
             when 'offer'
               counts['Received an offer but not responded'][phase] += count
             when 'recruited'
