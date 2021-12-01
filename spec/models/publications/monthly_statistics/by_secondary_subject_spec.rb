@@ -4,6 +4,22 @@ RSpec.describe Publications::MonthlyStatistics::BySecondarySubject do
   context 'applications by status table data' do
     subject(:statistics) { described_class.new.table_data }
 
+    it 'correctly counts applications with multiple subjects' do
+      subjects = [
+        create(:subject, name: 'Art and design', code: 'W1'),
+        create(:subject, name: 'History', code: 'V1'),
+      ]
+
+      create(:application_choice,
+             :with_recruited,
+             :with_completed_application_form,
+             current_recruitment_cycle_year: RecruitmentCycle.current_year,
+             course_option: create(:course_option, course: create(:course, level: 'secondary', subjects: subjects)))
+
+      expect(statistics[:rows]).to include(a_hash_including('Subject' => 'Art and design', 'Recruited' => 1, 'Total' => 1))
+      expect(statistics[:column_totals].last).to eq 1
+    end
+
     it "returns table data for 'applications by secondary subject'" do
       setup_test_data
 
