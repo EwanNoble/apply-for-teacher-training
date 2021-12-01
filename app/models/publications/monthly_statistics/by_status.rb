@@ -87,7 +87,7 @@ module Publications
 
       def tally_individual_application_choices(phase:)
         ApplicationChoice.joins(:application_form)
-          .where('application_forms.phase' => phase, 'application_forms.recruitment_cycle_year' => RecruitmentCycle.current_year)
+          .where('application_forms.phase' => phase, 'application_choices.current_recruitment_cycle_year' => RecruitmentCycle.current_year)
           .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
           .group(:status).count
       end
