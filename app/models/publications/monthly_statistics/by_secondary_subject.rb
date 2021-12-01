@@ -85,6 +85,7 @@ module Publications
                                                                                             subject_names_and_codes)
 
           dominant_subject = dominant_subject.to_s.humanize
+          dominant_subject = 'Subject not recognised' if dominant_subject == 'Secondary'
 
           if subject_counts[dominant_subject].present?
             if subject_counts[dominant_subject][status].present?
@@ -105,10 +106,9 @@ module Publications
           .joins(application_form: :candidate)
           .joins(:current_course)
           .preload(current_course: :subjects)
-          .where('candidates.hide_in_reporting' => false)
-          .where.not('application_forms.submitted_at' => nil)
+          .where('candidates.hide_in_reporting IS NOT TRUE')
           .where(current_recruitment_cycle_year: RecruitmentCycle.current_year)
-          .where.not(status: 'offer_deferred')
+          .where(status: ApplicationStateChange::STATES_VISIBLE_TO_PROVIDER)
           .where('courses.level' => 'secondary')
       end
     end
