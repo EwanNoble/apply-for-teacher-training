@@ -45,16 +45,17 @@ module Publications
         counts = available_region_codes.index_with { |_region_code| {} }
 
         group_query_excluding_deferred_offers.map do |item|
-          increment_area_status_count(counts, item, 'status')
+          increment_area_status_count(counts, item)
         end
 
         counts
       end
 
-      def increment_area_status_count(counts, item, status_attribute)
-        area = item['region_code'] || 'no_region'
-        status = item[status_attribute]
+      def increment_area_status_count(counts, item)
+        area = item['region_code']
+        status = item['status']
         count = item['count']
+
         running_count = counts[area]&.fetch(status, 0)
         counts[area]&.merge!({ status => running_count + count })
       end
@@ -72,7 +73,12 @@ module Publications
               SELECT
                   c.id,
                   f.id,
-                  f.region_code as region_code,
+                  CASE
+                    WHEN f.country IS NULL AND f.region_code IS NULL THEN 'no_region'
+                    WHEN f.region_code IS NOT NULL THEN f.region_code
+                    WHEN f.country IN (#{EU_EEA_SWISS_COUNTRY_CODES.map { |c| "'#{c}'" }.join(',')}) THEN 'european_economic_area'
+                    ELSE 'rest_of_the_world'
+                  END region_code,
                   CASE
                     WHEN 'recruited' = ANY(ARRAY_AGG(ch.status)) THEN 'recruited'
                     WHEN 'pending_conditions' = ANY(ARRAY_AGG(ch.status)) THEN 'pending_conditions'
