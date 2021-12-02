@@ -43,7 +43,7 @@ module DataAPI
           :candidate,
         ).preload(
           :application_qualifications,
-          application_choices: [{ course: :subjects }, :provider, :accredited_provider, :audits],
+          application_choices: [{ current_course: :subjects }, :provider, :accredited_provider, :audits],
         )
         .where('candidates.hide_in_reporting' => false)
         .where.not(submitted_at: nil)
