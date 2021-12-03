@@ -90,7 +90,7 @@ module Publications
           end
 
           subject_counts
-        end
+        end.sort.to_h
       end
 
       def application_choices_with_subjects
