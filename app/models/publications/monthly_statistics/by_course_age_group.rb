@@ -13,7 +13,7 @@ module Publications
       def rows
         @rows ||= formatted_group_query.map do |age_group, statuses|
           {
-            'Age group' => age_group,
+            'Course phase' => age_group,
             'Recruited' => recruited_count(statuses),
             'Conditions pending' => pending_count(statuses),
             'Deferred' => deferred_count(statuses),
