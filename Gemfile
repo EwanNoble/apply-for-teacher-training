@@ -93,6 +93,9 @@ gem 'request_store_rails'
 gem 'request_store-sidekiq'
 gem 'rails_semantic_logger'
 
+gem 'stackprof'
+gem 'memory_profiler'
+
 # Background processing
 gem 'sidekiq'
 gem 'clockwork'
