@@ -1,5 +1,10 @@
 module VendorAPI
   class ApplicationsController < VendorAPIController
+    include Pagy::Backend
+
+    DEFAULT_PER_PAGE = 50
+    MAX_PER_PAGE = 50
+
     def index
       render json: serialized_application_choices_data
     end
@@ -12,8 +17,23 @@ module VendorAPI
 
   private
 
+    def paginate(scope)
+      pagy, paginated_records = pagy(scope, items: per_page, page: page)
+      pagy_headers_merge(pagy)
+
+      paginated_records
+    end
+
+    def per_page
+      [(params[:per_page] || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
+    end
+
+    def page
+      (params[:page] || 1).to_i
+    end
+
     def serialized_application_choices_data
-      json_data = get_application_choices_for_provider_since(since: since_param).map do |application_choice|
+      json_data = paginate(get_application_choices_for_provider_since(since: since_param)).map do |application_choice|
         SingleApplicationPresenter.new(application_choice).serialized_json
       end
 
@@ -37,9 +57,7 @@ module VendorAPI
     def get_application_choices_for_provider_since(since:)
       application_choices_visible_to_provider
         .where('application_choices.updated_at > ?', since)
-        .find_each(batch_size: 500)
-        .sort_by(&:updated_at)
-        .reverse
+        .order('application_choices.updated_at DESC')
     end
 
     def since_param
