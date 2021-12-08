@@ -32,6 +32,14 @@ RSpec.describe CarryOverApplication do
     end
 
     it_behaves_like 'duplicates application form', 'apply_1', 2021
+
+    it 'sets the `Candidate#candidate_api_updated_at` timestamp' do
+      original_application_form.candidate.update_columns(candidate_api_updated_at: 3.months.ago)
+      described_class.new(original_application_form).call
+      expect(
+        original_application_form.reload.candidate.candidate_api_updated_at,
+      ).to eq(Time.zone.now)
+    end
   end
 
   context 'when original application is from multiple cycles ago' do
