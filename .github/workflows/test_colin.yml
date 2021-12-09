@@ -34,3 +34,10 @@ jobs:
             echo TEST_USERNAME=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}
             echo TEST_PASSWORD=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}
 
+      - name: Use Secrets 3
+        run: |
+            echo "::add-mask::${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}"
+            echo "::add-mask::${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}"
+            echo TEST_USERNAME=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}
+            echo TEST_PASSWORD=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}
+
