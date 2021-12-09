@@ -1,0 +1,30 @@
+name: Test Colin
+
+on:
+  push:
+    branches:
+      - test-colin
+
+jobs:
+  test-colin-job:
+    environment: qa
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: Azure/get-keyvault-secrets@v1
+        id:   azSecret
+        with:
+           keyvault: s121d01-shared-kv-01
+           secrets: CONTENT-KEYS
+
+      - name: Use Secrets
+        run: |
+            echo TEST_USERNAME=$TEST_USERNAME
+            echo TEST_PASSWORD=$TEST_PASSWORD
+        env:
+          TEST_PASSWORD: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}
+          TEST_USERNAME: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}
