@@ -28,3 +28,9 @@ jobs:
         env:
           TEST_PASSWORD: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}
           TEST_USERNAME: ${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}
+
+      - name: Use Secrets 2
+        run: |
+            echo TEST_USERNAME=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_USERNAME }}
+            echo TEST_PASSWORD=${{ fromJson( steps.azSecret.outputs.CONTENT-KEYS).TEST_PASSWORD }}
+
