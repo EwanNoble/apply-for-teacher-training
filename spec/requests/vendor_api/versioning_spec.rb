@@ -44,13 +44,6 @@ RSpec.describe 'Versioning', type: :request do
     end
   end
 
-  context 'accessing a route with a patch version specified' do
-    it 'returns a 404' do
-      get_api_request "/api/v1.0.0/applications?since=#{CGI.escape((Time.zone.now - 1.day).iso8601)}"
-      expect(response.status).to eq(404)
-    end
-  end
-
   context 'route validation' do
     context 'when a route is available' do
       context 'when only the major version is specified' do
