@@ -81,8 +81,8 @@ RSpec.feature 'Add course to submitted application' do
   end
 
   def when_i_fill_in_the_course_code_for_a_course_that_is_not_associated_with_the_ratifying_provider
-    @other_providers_course_option = create(:course_option, course: create(:course, :open_on_apply))
-    @unassociated_course_code = @other_providers_course_option.course.code
+    @unassociated_course_code = 'U456'
+    @other_providers_course_option = create(:course_option, course: create(:course, :open_on_apply, code: @unassociated_course_code))
     fill_in('Course code', with: @unassociated_course_code)
   end
 
@@ -97,7 +97,8 @@ RSpec.feature 'Add course to submitted application' do
       course_code: @unassociated_course_code,
     )
 
-    expect(page).to have_content "No courses for #{@application_choice.provider.name_and_code} found."
+    expect(page).to have_content "Course code U456 not found at #{@application_choice.provider.name_and_code}."
+    expect(page).to have_content "See all available courses for #{@application_choice.provider.name_and_code}."
   end
 
   def when_i_click_search_again

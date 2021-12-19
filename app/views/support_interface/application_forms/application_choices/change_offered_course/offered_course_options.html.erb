@@ -21,6 +21,12 @@
     <%= f.govuk_submit 'Continue' %>
   <% end %>
 <% else %>
-  <p class="govuk-body">No courses for <%= @application_choice.provider.name_and_code %> found.</p>
+  <p class="govuk-body">
+  Course code <strong><%= @pick_course.course_code %></strong> not found at <%= @application_choice.provider.name_and_code %>.
+  </p>
+  <p class="govuk-body">
+    <%= govuk_link_to support_interface_provider_courses_path(@application_choice.provider) do %>
+      See all available courses for <%= @application_choice.provider.name_and_code %><% end %>.
+  </p>
   <%= govuk_button_link_to('Search again', support_interface_application_form_application_choice_change_offered_course_search_path(course_code: @pick_course.course_code)) %>
 <% end %>
