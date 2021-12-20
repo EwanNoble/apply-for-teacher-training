@@ -7,6 +7,7 @@ module Publications
     end
 
     delegate :statistics, to: :report
+    delegate :deferred_application_count, to: :report
 
     def next_cycle_name
       RecruitmentCycle.cycle_name(CycleTimetable.next_year)
