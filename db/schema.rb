@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_17_220532) do
+ActiveRecord::Schema.define(version: 2021_12_17_113124) do
 
   create_sequence "qualifications_public_id_seq", start: 120000
 
@@ -504,6 +504,7 @@ ActiveRecord::Schema.define(version: 2021_11_17_220532) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.json "statistics"
+    t.string "month"
   end
 
   create_table "notes", force: :cascade do |t|
