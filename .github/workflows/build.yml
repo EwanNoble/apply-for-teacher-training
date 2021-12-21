@@ -20,6 +20,17 @@ jobs:
       IMAGE_TAG: ${{ env.IMAGE_TAG }}
       GIT_BRANCH: ${{ env.GIT_BRANCH }}
 
+    if: |-
+
+      ${{
+        !( github.event_name == 'pull_request' && github.event.action=='labeled') ||
+        (
+          github.event_name == 'pull_request' &&
+          github.event.action=='labeled' &&
+          contains(github.event.pull_request.labels.*.name, 'deploy')
+        )
+      }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
